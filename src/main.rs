@@ -23,7 +23,7 @@ pub enum RunState {
 
 pub struct State {
     pub ecs: World,
-    pub run_state: RunState,
+    pub runstate: RunState,
 }
 
 impl State {
@@ -40,11 +40,11 @@ impl GameState for State {
     fn tick(&mut self, ctx: &mut Rltk) {
         ctx.cls();
 
-        if self.run_state == RunState::Running {
+        if self.runstate == RunState::Running {
             self.run_systems();
-            self.run_state = RunState::Paused;
+            self.runstate = RunState::Paused;
         } else {
-            self.run_state = player_input(self, ctx);
+            self.runstate = player_input(self, ctx);
         }
 
         draw_map(&self.ecs, ctx);
@@ -69,7 +69,7 @@ fn main() -> rltk::BError {
         .build()?;
     let mut gs = State {
         ecs: World::new(),
-        run_state: RunState::Running,
+        runstate: RunState::Running,
     };
 
     gs.ecs.register::<Monster>();
