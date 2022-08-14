@@ -72,6 +72,7 @@ fn main() -> rltk::BError {
             glyph: rltk::to_cp437('@'),
         })
         .with(Viewshed {
+            dirty: true,
             range: 6,
             visible_tiles: Vec::new(),
         })

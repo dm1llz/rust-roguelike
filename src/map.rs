@@ -1,5 +1,4 @@
 use super::Rect;
-use super::{Player, Viewshed};
 use rltk::{Algorithm2D, BaseMap, Point, RandomNumberGenerator, Rltk, RGB};
 use specs::prelude::*;
 use std::cmp::{max, min};
@@ -9,6 +8,7 @@ pub struct Map {
     pub revealed_tiles: Vec<bool>,
     pub rooms: Vec<Rect>,
     pub tiles: Vec<TileType>,
+    pub visible_tiles: Vec<bool>,
     pub width: i32,
 }
 
@@ -23,6 +23,7 @@ impl Map {
             revealed_tiles: vec![false; 80 * 50],
             rooms: Vec::new(),
             tiles: vec![TileType::Wall; 80 * 50],
+            visible_tiles: vec![false; 80 * 50],
             width: 80,
         };
 
@@ -123,26 +124,24 @@ pub fn draw_map(ecs: &World, ctx: &mut Rltk) {
 
     for (idx, tile) in map.tiles.iter().enumerate() {
         if map.revealed_tiles[idx] {
+            let glyph;
+            let mut fg;
+
             match tile {
                 TileType::Floor => {
-                    ctx.set(
-                        x,
-                        y,
-                        RGB::from_f32(0.5, 0.5, 0.5),
-                        RGB::from_f32(0., 0., 0.),
-                        rltk::to_cp437('.'),
-                    );
+                    fg = RGB::from_f32(0.0, 0.5, 0.5);
+                    glyph = rltk::to_cp437('.');
                 }
                 TileType::Wall => {
-                    ctx.set(
-                        x,
-                        y,
-                        RGB::from_f32(0.0, 1.0, 0.0),
-                        RGB::from_f32(0., 0., 0.),
-                        rltk::to_cp437('#'),
-                    );
+                    fg = RGB::from_f32(0., 1.0, 0.);
+                    glyph = rltk::to_cp437('#');
                 }
             }
+
+            if !map.visible_tiles[idx] {
+                fg = fg.to_greyscale()
+            }
+            ctx.set(x, y, fg, RGB::from_f32(0., 0., 0.), glyph);
         }
 
         x += 1;
