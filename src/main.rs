@@ -5,11 +5,13 @@ mod components;
 mod map;
 mod player;
 mod rect;
+mod visibility_system;
 
 pub use components::*;
 pub use map::*;
 pub use player::*;
 pub use rect::*;
+pub use visibility_system::VisibilitySystem;
 
 pub struct State {
     pub ecs: World,
@@ -17,6 +19,8 @@ pub struct State {
 
 impl State {
     fn run_systems(&mut self) {
+        let mut vis = VisibilitySystem{};
+        vis.run_now(&self.ecs);
         self.ecs.maintain();
     }
 }
@@ -50,6 +54,7 @@ fn main() -> rltk::BError {
     gs.ecs.register::<Player>();
     gs.ecs.register::<Position>();
     gs.ecs.register::<Renderable>();
+    gs.ecs.register::<Viewshed>();
 
     let map = Map::new_map_rooms_and_corridors();
     let (player_x, player_y) = map.rooms[0].center();
@@ -63,9 +68,13 @@ fn main() -> rltk::BError {
             y: player_y,
         })
         .with(Renderable {
-            glyph: rltk::to_cp437('@'),
-            fg: RGB::named(rltk::YELLOW),
             bg: RGB::named(rltk::BLACK),
+            fg: RGB::named(rltk::YELLOW),
+            glyph: rltk::to_cp437('@'),
+        })
+        .with(Viewshed {
+            range: 6,
+            visible_tiles: Vec::new(),
         })
         .build();
 
