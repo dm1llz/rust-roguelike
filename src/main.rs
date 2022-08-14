@@ -124,7 +124,9 @@ fn main() -> rltk::BError {
     gs.ecs.insert(Point::new(player_x, player_y));
     gs.ecs
         .create_entity()
-        .with(Name{ name: "Player".to_string() })
+        .with(Name {
+            name: "Player".to_string(),
+        })
         .with(Player {})
         .with(Position {
             x: player_x,

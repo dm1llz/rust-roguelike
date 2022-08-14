@@ -1,4 +1,4 @@
-use super::{ Monster, Name, Viewshed};
+use super::{Monster, Name, Viewshed};
 use rltk::{console, Point};
 use specs::prelude::*;
 
