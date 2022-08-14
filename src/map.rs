@@ -1,12 +1,15 @@
 use super::Rect;
+use super::{Player, Viewshed};
 use rltk::{Algorithm2D, BaseMap, Point, RandomNumberGenerator, Rltk, RGB};
+use specs::prelude::*;
 use std::cmp::{max, min};
 
 pub struct Map {
-    pub tiles: Vec<TileType>,
-    pub rooms: Vec<Rect>,
-    pub width: i32,
     pub height: i32,
+    pub revealed_tiles: Vec<bool>,
+    pub rooms: Vec<Rect>,
+    pub tiles: Vec<TileType>,
+    pub width: i32,
 }
 
 impl Map {
@@ -17,6 +20,7 @@ impl Map {
     pub fn new_map_rooms_and_corridors() -> Map {
         let mut map = Map {
             height: 50,
+            revealed_tiles: vec![false; 80 * 50],
             rooms: Vec::new(),
             tiles: vec![TileType::Wall; 80 * 50],
             width: 80,
@@ -112,28 +116,32 @@ pub enum TileType {
     Wall,
 }
 
-pub fn draw_map(map: &[TileType], ctx: &mut Rltk) {
-    let mut y = 0;
+pub fn draw_map(ecs: &World, ctx: &mut Rltk) {
+    let map = ecs.fetch::<Map>();
     let mut x = 0;
-    for tile in map.iter() {
-        match tile {
-            TileType::Floor => {
-                ctx.set(
-                    x,
-                    y,
-                    RGB::from_f32(0.5, 0.5, 0.5),
-                    RGB::from_f32(0., 0., 0.),
-                    rltk::to_cp437('.'),
-                );
-            }
-            TileType::Wall => {
-                ctx.set(
-                    x,
-                    y,
-                    RGB::from_f32(0.0, 1.0, 0.0),
-                    RGB::from_f32(0., 0., 0.),
-                    rltk::to_cp437('#'),
-                );
+    let mut y = 0;
+
+    for (idx, tile) in map.tiles.iter().enumerate() {
+        if map.revealed_tiles[idx] {
+            match tile {
+                TileType::Floor => {
+                    ctx.set(
+                        x,
+                        y,
+                        RGB::from_f32(0.5, 0.5, 0.5),
+                        RGB::from_f32(0., 0., 0.),
+                        rltk::to_cp437('.'),
+                    );
+                }
+                TileType::Wall => {
+                    ctx.set(
+                        x,
+                        y,
+                        RGB::from_f32(0.0, 1.0, 0.0),
+                        RGB::from_f32(0., 0., 0.),
+                        rltk::to_cp437('#'),
+                    );
+                }
             }
         }
 
