@@ -4,6 +4,7 @@ use specs::prelude::*;
 use std::cmp::{max, min};
 
 pub struct Map {
+    pub blocked: Vec<bool>,
     pub height: i32,
     pub revealed_tiles: Vec<bool>,
     pub rooms: Vec<Rect>,
@@ -13,12 +14,9 @@ pub struct Map {
 }
 
 impl Map {
-    pub fn xy_idx(&self, x: i32, y: i32) -> usize {
-        (y as usize * self.width as usize) + x as usize
-    }
-
     pub fn new_map_rooms_and_corridors() -> Map {
         let mut map = Map {
+            blocked: vec![false; 80 * 50],
             height: 50,
             revealed_tiles: vec![false; 80 * 50],
             rooms: Vec::new(),
@@ -71,6 +69,16 @@ impl Map {
         map
     }
 
+    pub fn populate_blocked(&mut self) {
+        for (i, tile) in self.tiles.iter_mut().enumerate() {
+            self.blocked[i] = *tile == TileType::Wall;
+        }
+    }
+
+    pub fn xy_idx(&self, x: i32, y: i32) -> usize {
+        (y as usize * self.width as usize) + x as usize
+    }
+
     fn apply_room_to_map(&mut self, room: &Rect) {
         for y in room.y1 + 1..=room.y2 {
             for x in room.x1 + 1..=room.x2 {
@@ -104,7 +112,7 @@ impl Map {
         }
 
         let idx = self.xy_idx(x, y);
-        self.tiles[idx as usize] != TileType::Wall
+        !self.blocked[idx]
     }
 }
 
