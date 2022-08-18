@@ -6,6 +6,14 @@ use specs_derive::*;
 pub struct BlocksTile {}
 
 #[derive(Component, Debug)]
+pub struct CombatStats {
+    pub defense: i32,
+    pub hp: i32,
+    pub max_hp: i32,
+    pub power: i32,
+}
+
+#[derive(Component, Debug)]
 pub struct Monster {}
 
 #[derive(Component, Debug)]

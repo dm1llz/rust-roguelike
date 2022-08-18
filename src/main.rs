@@ -77,6 +77,7 @@ fn main() -> rltk::BError {
     };
 
     gs.ecs.register::<BlocksTile>();
+    gs.ecs.register::<CombatStats>();
     gs.ecs.register::<Monster>();
     gs.ecs.register::<Name>();
     gs.ecs.register::<Player>();
@@ -107,6 +108,12 @@ fn main() -> rltk::BError {
         gs.ecs
             .create_entity()
             .with(BlocksTile {})
+            .with(CombatStats {
+                defense: 1,
+                hp: 16,
+                max_hp: 16,
+                power: 4
+            })
             .with(Monster {})
             .with(Name {
                 name: format!("{} #{}", &name, i),
@@ -130,6 +137,12 @@ fn main() -> rltk::BError {
     gs.ecs.insert(Point::new(player_x, player_y));
     gs.ecs
         .create_entity()
+        .with(CombatStats {
+            defense: 2,
+            hp: 30,
+            max_hp: 30,
+            power: 5,
+        })
         .with(Name {
             name: "Player".to_string(),
         })
