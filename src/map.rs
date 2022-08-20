@@ -8,18 +8,26 @@ pub struct Map {
     pub height: i32,
     pub revealed_tiles: Vec<bool>,
     pub rooms: Vec<Rect>,
+    pub tile_content: Vec<Vec<Entity>>,
     pub tiles: Vec<TileType>,
     pub visible_tiles: Vec<bool>,
     pub width: i32,
 }
 
 impl Map {
+    pub fn clear_content_index(&mut self) {
+        for content in self.tile_content.iter_mut() {
+            content.clear();
+        }
+    }
+
     pub fn new_map_rooms_and_corridors() -> Map {
         let mut map = Map {
             blocked: vec![false; 80 * 50],
             height: 50,
             revealed_tiles: vec![false; 80 * 50],
             rooms: Vec::new(),
+            tile_content: vec![Vec::new(); 80 * 50],
             tiles: vec![TileType::Wall; 80 * 50],
             visible_tiles: vec![false; 80 * 50],
             width: 80,
@@ -146,7 +154,7 @@ impl BaseMap for Map {
         if self.is_exit_valid(x, y + 1) {
             exits.push((idx + w, 1.0));
         }
-        
+
         // Diagnonals
         if self.is_exit_valid(x - 1, y - 1) {
             exits.push(((idx - w) - 1, 1.45));

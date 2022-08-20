@@ -28,7 +28,7 @@ fn try_move_player(delta_x: i32, delta_y: i32, ecs: &mut World) {
 
 pub fn player_input(gs: &mut State, ctx: &mut Rltk) -> RunState {
     match ctx.key {
-        None => { return RunState::Paused }
+        None => return RunState::Paused,
         Some(key) => match key {
             VirtualKeyCode::Left
             | VirtualKeyCode::Numpad4
@@ -48,16 +48,12 @@ pub fn player_input(gs: &mut State, ctx: &mut Rltk) -> RunState {
             | VirtualKeyCode::S => try_move_player(0, 1, &mut gs.ecs),
 
             // Diagonals
-            VirtualKeyCode::Numpad9
-            | VirtualKeyCode::Y => try_move_player( 1, -1, &mut gs.ecs),
-            VirtualKeyCode::Numpad7
-            | VirtualKeyCode::U => try_move_player(-1, -1, &mut gs.ecs),
-            VirtualKeyCode::Numpad3
-            | VirtualKeyCode::N => try_move_player(1, 1, &mut gs.ecs),
-            VirtualKeyCode::Numpad1
-            | VirtualKeyCode::B => try_move_player(-1, 1, &mut gs.ecs),
+            VirtualKeyCode::Numpad9 | VirtualKeyCode::Y => try_move_player(1, -1, &mut gs.ecs),
+            VirtualKeyCode::Numpad7 | VirtualKeyCode::U => try_move_player(-1, -1, &mut gs.ecs),
+            VirtualKeyCode::Numpad3 | VirtualKeyCode::N => try_move_player(1, 1, &mut gs.ecs),
+            VirtualKeyCode::Numpad1 | VirtualKeyCode::B => try_move_player(-1, 1, &mut gs.ecs),
 
-            _ => { return RunState::Paused }
+            _ => return RunState::Paused,
         },
     }
 

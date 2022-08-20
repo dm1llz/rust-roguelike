@@ -112,7 +112,7 @@ fn main() -> rltk::BError {
                 defense: 1,
                 hp: 16,
                 max_hp: 16,
-                power: 4
+                power: 4,
             })
             .with(Monster {})
             .with(Name {
